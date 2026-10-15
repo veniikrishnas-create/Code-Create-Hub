@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reviews • Code Create Hub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #111;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.5rem;
+      color: #00ffcc;
+      text-shadow: 0 0 8px #00ffcc;
+    }
+
+    nav {
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #00ffcc;
+      text-shadow: 0 0 6px #00ffcc;
+    }
+
+    main {
+      flex: 1;
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+      line-height: 1.8;
+    }
+
+    h1 {
+      color: #00ffcc;
+      text-shadow: 0 0 8px #00ffcc;
+    }
+
+    h2 {
+      margin-top: 30px;
+      color: #ffcc00;
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    input, textarea, select {
+      background: #1e1e1e;
+      color: white;
+    }
+
+    button {
+      background: #00ffcc;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00cc99;
+    }
+
+    .review-card {
+      background: rgba(255,255,255,0.05);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
+      position: relative;
+    }
+
+    /* Delete and Edit buttons - small round */
+    .delete-btn, .edit-btn {
+      position: absolute;
+      top: 10px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .delete-btn {
+      right: 10px;
+      background: #ff4d4d;
+      color: white;
+    }
+
+    .delete-btn:hover {
+      background: #ff1a1a;
+    }
+
+    .edit-btn {
+      right: 50px; /* left of delete button */
+      background: #00ccff;
+      color: black;
+    }
+
+    .edit-btn:hover {
+      background: #0099cc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px;
+      background: #111;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    footer span {
+      color: #00ffcc;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>🚀 Code Create Hub</header>
+  
+  <nav>
+       <a href="code_create_hub.html" class="btn">ScriptSpace</a>
+    <a href="about.html" class="btn">Journey</a>
+    <a href="help.html" class="btn">Guidance</a>
+    <a href="review.html" class="btn">Review Corner</a>
+    <a href="tutorial.html" class="btn">CodeAcademy</a>
+    <a href="builder.html" class="btn">CreatorDeck</a>
+ </nav>
+  <main>
+    <h1>🌟 User Reviews</h1>
+
+    <!-- Add Review Form -->
+    <h2>Add Your Review</h2>
+    <form id="reviewForm">
+      <input type="text" id="username" placeholder="Your Name" required>
+      <textarea id="reviewText" rows="4" placeholder="Write your review..." required></textarea>
+      <select id="starRating" required>
+        <option value="" disabled selected>Choose Star Rating</option>
+        <option value="1">⭐</option>
+        <option value="2">⭐ ⭐</option>
+        <option value="3">⭐ ⭐ ⭐</option>
+        <option value="4">⭐ ⭐ ⭐ ⭐</option>
+        <option value="5">⭐ ⭐ ⭐ ⭐ ⭐</option>
+      </select>
+      <button type="submit">Submit Review</button>
+    </form>
+
+    <div id="reviewsContainer">
+      <!-- Reviews will appear here -->
+    </div>
+  </main>
+  
+  <footer>Made with ❤️ by <span>Code Create Hub</span></footer>
+
+  <script>
+    const form = document.getElementById('reviewForm');
+    const reviewsContainer = document.getElementById('reviewsContainer');
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('username').value;
+      const review = document.getElementById('reviewText').value;
+      const stars = document.getElementById('starRating').value;
+
+      const card = document.createElement('div');
+      card.className = 'review-card';
+      card.innerHTML = `
+        <h3>${name}</h3>
+        <p>${'⭐'.repeat(stars)}</p>
+        <p>${review}</p>
+        <button class="edit-btn">✎</button>
+        <button class="delete-btn">✕</button>
+      `;
+
+      // Delete button
+      card.querySelector('.delete-btn').addEventListener('click', () => {
+        card.remove();
+      });
+
+      // Edit button
+      card.querySelector('.edit-btn').addEventListener('click', () => {
+        document.getElementById('username').value = name;
+        document.getElementById('reviewText').value = review;
+        document.getElementById('starRating').value = stars;
+        card.remove();
+      });
+
+      reviewsContainer.prepend(card);
+      form.reset();
+    });
+  </script>
+</body>
+</html>
