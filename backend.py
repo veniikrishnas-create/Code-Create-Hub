@@ -5,20 +5,38 @@ import google.generativeai as genai
 
 app = Flask(__name__)
 
-# Get Gemini API key from Render environment variables
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 api_key = os.environ.get("GEMINI_API_KEY")
 
 if api_key:
     genai.configure(api_key=api_key)
 
+# Only allow HTML pages that belong to this project.
+ALLOWED_PAGES = {
+    "welcome page.html",
+    "code_create_hub.html",
+    "about.html",
+    "builder.html",
+    "help.html",
+    "review.html",
+    "tutorial.html",
+}
 
-# Welcome page
+
+# Home page
 @app.route("/", methods=["GET"])
 def home():
-    return send_from_directory(
-        os.path.dirname(os.path.abspath(__file__)),
-        "welcome page.html"
-    )
+    return send_from_directory(BASE_DIR, "welcome page.html")
+
+
+# Serve the project's HTML pages
+@app.route("/<path:filename>", methods=["GET"])
+def serve_page(filename):
+    if filename in ALLOWED_PAGES:
+        return send_from_directory(BASE_DIR, filename)
+
+    return jsonify({"error": "Page not found"}), 404
 
 
 # Gemini AI endpoint
@@ -41,9 +59,7 @@ def ask_gemini():
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(question)
 
-        return jsonify({
-            "reply": response.text
-        })
+        return jsonify({"reply": response.text})
 
     except Exception:
         app.logger.exception("Gemini API request failed")
@@ -52,6 +68,5 @@ def ask_gemini():
         }), 500
 
 
-# Run locally
 if __name__ == "__main__":
     app.run(debug=False)
